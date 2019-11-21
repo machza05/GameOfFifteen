@@ -4,28 +4,14 @@ import javax.swing.*;
 import java.util.Random;
 import java.awt.Color;
 
-public class GameController extends JPanel {
-    private int size;
-    // Number of tiles
-    private int nbTiles;
-    // Grid UI Dimension
-    private int dimension;
-    // Foreground Color
-    private static final Color FOREGROUND_COLOR = new Color(239, 83, 80); // we use arbitrary color
-    // Random object to shuffle tiles
-    public static final Random RANDOM = new Random();
-    // Storing the tiles in a 1D Array of integers
-    private int[] tiles;
-    // Size of tile on UI
-    private int tileSize;
-    // Position of the blank tile
-    private int blankPos;
-    // Margin for the grid on the frame
-    private int margin;
-    // Grid UI Size
-    private int gridSize;
-    private boolean gameOver; // true if game over, false otherwise
+import static com.company.GameModel.RANDOM;
 
+public class GameController extends JPanel {
+    GameModel md ;
+
+    public GameController(GameModel gm){
+        md = gm;
+    }
 
     public void newGame() {
         do {
@@ -33,27 +19,27 @@ public class GameController extends JPanel {
             shuffle(); // shuffle
         } while (!isSolvable()); // make it until grid be solvable
 
-        gameOver = false;
+        md.gameOver = false;
     }
 
     public void reset() {
-        for (int i = 0; i < tiles.length; i++) {
-            tiles[i] = (i + 1) % tiles.length;
+        for (int i = 0; i < md.tiles.length; i++) {
+            md.tiles[i] = (i + 1) % md.tiles.length;
         }
 
         // we set blank cell at the last
-        blankPos = tiles.length - 1;
+        md.blankPos = md.tiles.length - 1;
     }
 
     public void shuffle() {
         // don't include the blank tile in the shuffle, leave in the solved position
-        int n = nbTiles;
+        int n = md.nbTiles;
 
         while (n > 1) {
             int r = RANDOM.nextInt(n--);
-            int tmp = tiles[r];
-            tiles[r] = tiles[n];
-            tiles[n] = tmp;
+            int tmp = md.tiles[r];
+            md.tiles[r] = md.tiles[n];
+            md.tiles[n] = tmp;
         }
     }
 
@@ -64,9 +50,9 @@ public class GameController extends JPanel {
     public boolean isSolvable() {
         int countInversions = 0;
 
-        for (int i = 0; i < nbTiles; i++) {
+        for (int i = 0; i < md.nbTiles; i++) {
             for (int j = 0; j < i; j++) {
-                if (tiles[j] > tiles[i])
+                if (md.tiles[j] > md.tiles[i])
                     countInversions++;
             }
         }
@@ -75,11 +61,11 @@ public class GameController extends JPanel {
     }
 
     public boolean isSolved() {
-        if (tiles[tiles.length - 1] != 0) // if blank tile is not in the solved position ==> not solved
+        if (md.tiles[md.tiles.length - 1] != 0) // if blank tile is not in the solved position ==> not solved
             return false;
 
-        for (int i = nbTiles - 1; i >= 0; i--) {
-            if (tiles[i] != i + 1)
+        for (int i = md.nbTiles - 1; i >= 0; i--) {
+            if (md.tiles[i] != i + 1)
                 return false;
         }
 

@@ -14,30 +14,31 @@ import javax.swing.JPanel;
 
 public class GameModel extends JPanel {
     // our grid will be drawn in a dedicated Panel
-
+    GameController gc;
     // Size of our Game of Fifteen instance
-    private int size;
+    public int size;
     // Number of tiles
-    private int nbTiles;
+    public int nbTiles;
     // Grid UI Dimension
     private int dimension;
     // Foreground Color
-    private static final Color FOREGROUND_COLOR = new Color(239, 83, 80); // we use arbitrary color
+    public static final Color FOREGROUND_COLOR = new Color(239, 83, 80); // we use arbitrary color
     // Random object to shuffle tiles
     public static final Random RANDOM = new Random();
     // Storing the tiles in a 1D Array of integers
-    private int[] tiles;
+    public int[] tiles;
     // Size of tile on UI
-    private int tileSize;
+    public int tileSize;
     // Position of the blank tile
-    private int blankPos;
+    public int blankPos;
     // Margin for the grid on the frame
-    private int margin;
+    public int margin;
     // Grid UI Size
     private int gridSize;
-    private boolean gameOver; // true if game over, false otherwise
+    public boolean gameOver; // true if game over, false otherwise
 
     public GameModel(int size, int dim, int mar) {
+        gc = new GameController(this);
         this.size = size;
         dimension = dim;
         margin = mar;
@@ -63,7 +64,7 @@ public class GameModel extends JPanel {
                 // used to let users to interact on the grid by clicking
                 // it's time to implement interaction with users to move tiles to solve the game !
                 if (gameOver) {
-                    newGame();
+                    gc.newGame();
                 } else {
                     // get position of the click
                     int ex = e.getX() - margin;
@@ -104,7 +105,7 @@ public class GameModel extends JPanel {
                     }
 
                     // we check if game is solved
-                    gameOver = isSolved();
+                    gameOver = gc.isSolved();
                 }
 
                 // we repaint panel
@@ -112,6 +113,6 @@ public class GameModel extends JPanel {
             }
         });
 
-        newGame();
+        gc.newGame();
     }
 }

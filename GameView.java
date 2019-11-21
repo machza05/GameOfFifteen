@@ -10,40 +10,25 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 public class GameView extends JPanel {
-    private int size;
-    // Number of tiles
-    private int nbTiles;
-    // Grid UI Dimension
-    private int dimension;
-    // Foreground Color
-    private static final Color FOREGROUND_COLOR = new Color(239, 83, 80); // we use arbitrary color
-    // Random object to shuffle tiles
-    public static final Random RANDOM = new Random();
-    // Storing the tiles in a 1D Array of integers
-    private int[] tiles;
-    // Size of tile on UI
-    private int tileSize;
-    // Position of the blank tile
-    private int blankPos;
-    // Margin for the grid on the frame
-    private int margin;
-    // Grid UI Size
-    private int gridSize;
-    private boolean gameOver; // true if game over, false otherwise
+    GameModel md ;
+
+    public GameView(GameModel gm){
+        md = gm;
+    }
 
     public void drawGrid(Graphics2D g) {
-        for (int i = 0; i < tiles.length; i++) {
+        for (int i = 0; i < md.tiles.length; i++) {
             // we convert 1D coords to 2D coords given the size of the 2D Array
-            int r = i / size;
-            int c = i % size;
+            int r = i / md.size;
+            int c = i % md.size;
             // we convert in coords on the UI
-            int x = margin + c * tileSize;
-            int y = margin + r * tileSize;
+            int x = md.margin + c * md.tileSize;
+            int y = md.margin + r * md.tileSize;
 
             // check special case for blank tile
-            if (tiles[i] == 0) {
-                if (gameOver) {
-                    g.setColor(FOREGROUND_COLOR);
+            if (md.tiles[i] == 0) {
+                if (md.gameOver) {
+                    g.setColor(md.FOREGROUND_COLOR);
                     drawCenteredString(g, "\u2713", x, y);
                 }
 
@@ -52,21 +37,21 @@ public class GameView extends JPanel {
 
             // for other tiles
             g.setColor(getForeground());
-            g.fillRoundRect(x, y, tileSize, tileSize, 25, 25);
+            g.fillRoundRect(x, y, md.tileSize, md.tileSize, 25, 25);
             g.setColor(Color.BLACK);
-            g.drawRoundRect(x, y, tileSize, tileSize, 25, 25);
+            g.drawRoundRect(x, y, md.tileSize, md.tileSize, 25, 25);
             g.setColor(Color.WHITE);
 
-            drawCenteredString(g, String.valueOf(tiles[i]), x, y);
+            drawCenteredString(g, String.valueOf(md.tiles[i]), x, y);
         }
     }
 
     public void drawStartMessage(Graphics2D g) {
-        if (gameOver) {
+        if (md.gameOver) {
             g.setFont(getFont().deriveFont(Font.BOLD, 18));
-            g.setColor(FOREGROUND_COLOR);
+            g.setColor(md.FOREGROUND_COLOR);
             String s = "Click to start new game";
-            g.drawString(s, (getWidth() - g.getFontMetrics().stringWidth(s)) / 2, getHeight() - margin);
+            g.drawString(s, (getWidth() - g.getFontMetrics().stringWidth(s)) / 2, getHeight() - md.margin);
         }
     }
 
@@ -75,8 +60,8 @@ public class GameView extends JPanel {
         FontMetrics fm = g.getFontMetrics();
         int asc = fm.getAscent();
         int desc = fm.getDescent();
-        g.drawString(s, x + (tileSize - fm.stringWidth(s)) / 2,
-                y + (asc + (tileSize - (asc + desc)) / 2));
+        g.drawString(s, x + (md.tileSize - fm.stringWidth(s)) / 2,
+                y + (asc + (md.tileSize - (asc + desc)) / 2));
     }
 
     @Override
